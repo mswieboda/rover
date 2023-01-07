@@ -5,31 +5,39 @@ module Rover
     getter animations
 
     Speed = 333
-    Sheet = "./assets/player.png"
+    Sheet = "./assets/rover.png"
 
     def initialize(x = 0, y = 0)
       # sprite size
-      size = 128
+      size = 192
       @x = x
       @y = y
 
-      # init animations
       fps = 60
 
-      # idle
-      idle = GSF::Animation.new((fps / 3).to_i, loops: false)
-      idle.add(Sheet, 0, 0, size, size)
+      up = GSF::Animation.new((fps / 3).to_i, loops: false)
+      up.add(Sheet, 0, 0, size, size)
 
-      # # fire animation
-      # fire_frames = 3
-      # fire = GSF::Animation.new((fps / 25).to_i, loops: false)
+      right_up = GSF::Animation.new((fps / 3).to_i, loops: false)
+      right_up.add(Sheet, 1 * size, 0, size, size)
 
-      # fire_frames.times do |i|
-      #   fire.add(Sheet, i * size, 0, size, size)
-      # end
+      right = GSF::Animation.new((fps / 3).to_i, loops: false)
+      right.add(Sheet, 2 * size, 0, size, size)
 
-      @animations = GSF::Animations.new(:idle, idle)
-      # animations.add(:fire, fire)
+      right_down = GSF::Animation.new((fps / 3).to_i, loops: false)
+      right_down.add(Sheet, 3 * size, 0, size, size)
+
+      down = GSF::Animation.new((fps / 3).to_i, loops: false)
+      down.add(Sheet, 4 * size, 0, size, size)
+
+      @animations = GSF::Animations.new(:up, up)
+      @animations.add(:right_up, right_up)
+      @animations.add(:left_up, right_up, flip_horizontal: true)
+      @animations.add(:right, right)
+      @animations.add(:left, right, flip_horizontal: true)
+      @animations.add(:right_down, right_down)
+      @animations.add(:left_down, right_down, flip_horizontal: true)
+      @animations.add(:down, down)
     end
 
     def update(frame_time, keys : Keys)
@@ -56,7 +64,32 @@ module Rover
       end
 
       if dx != 0 || dy != 0
+        animate_move(dx, dy)
         move(dx, dy)
+      end
+    end
+
+    def animate_move(dx : Float64, dy : Float64)
+      if dx > 0
+        if dy < 0
+          @animations.play(:right_up)
+        elsif dy > 0
+          @animations.play(:right_down)
+        else
+          @animations.play(:right)
+        end
+      elsif dx < 0
+        if dy > 0
+          @animations.play(:left_up)
+        elsif dy < 0
+          @animations.play(:left_down)
+        else
+          @animations.play(:left)
+        end
+      elsif dy > 0
+        @animations.play(:down)
+      elsif dy < 0
+        @animations.play(:up)
       end
     end
 
