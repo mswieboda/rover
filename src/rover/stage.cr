@@ -6,11 +6,11 @@ module Rover
     getter start
     getter main
 
-    def initialize(window : SF::Window)
+    def initialize(window : SF::RenderWindow)
       super(window)
 
       @start = Scene::Start.new
-      @main = Scene::Main.new
+      @main = Scene::Main.new(window)
 
       @scene = start
     end

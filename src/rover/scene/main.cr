@@ -3,11 +3,16 @@ require "../hud"
 
 module Rover::Scene
   class Main < GSF::Scene
+    getter view : GSF::View
     getter hud
     getter player
 
-    def initialize
+    def initialize(window)
       super(:main)
+
+      @view = GSF::View.from_default(window).dup
+
+      view.zoom(1 / Screen.scaling_factor)
 
       @player = Player.new(x: 300, y: 300)
       @hud = HUD.new
