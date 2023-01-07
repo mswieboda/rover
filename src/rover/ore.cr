@@ -1,15 +1,14 @@
 module Rover
-  class Player
+  class Ore
     getter x : Int32
     getter y : Int32
     getter animations
 
-    Speed = 15
-    Sheet = "./assets/player.png"
+    Sheet = "./assets/ore.png"
 
     def initialize(x = 0, y = 0)
       # sprite size
-      size = 128
+      size = 64
       @x = x
       @y = y
 
@@ -23,33 +22,17 @@ module Rover
       @animations = GSF::Animations.new(:idle, idle)
     end
 
-    def update(frame_time, keys : Keys)
+    def update(frame_time)
       animations.update(frame_time)
-
-      update_movement(keys)
     end
 
-    def update_movement(keys : Keys)
-      dy = 0
-
-      if keys.pressed?(Keys::Up)
-        dy -= Speed
-      elsif keys.pressed?(Keys::Down)
-        dy += Speed
-      end
-
-      if y + dy > 0 && y + dy < GSF::Screen.height
-        move(0, dy)
-      end
+    def move(dx : Float64, dy : Float64)
+      @x += dx
+      @y += dy
     end
 
     def draw(window : SF::RenderWindow)
       animations.draw(window, x, y)
-    end
-
-    def move(dx : Int32, dy : Int32)
-      @x += dx
-      @y += dy
     end
   end
 end

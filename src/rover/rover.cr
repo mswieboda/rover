@@ -20,16 +20,16 @@ module Rover
       idle = GSF::Animation.new((fps / 3).to_i, loops: false)
       idle.add(Sheet, 0, 0, size, size)
 
-      # fire animation
-      fire_frames = 3
-      fire = GSF::Animation.new((fps / 25).to_i, loops: false)
+      # # fire animation
+      # fire_frames = 3
+      # fire = GSF::Animation.new((fps / 25).to_i, loops: false)
 
-      fire_frames.times do |i|
-        fire.add(Sheet, i * size, 0, size, size)
-      end
+      # fire_frames.times do |i|
+      #   fire.add(Sheet, i * size, 0, size, size)
+      # end
 
       @animations = GSF::Animations.new(:idle, idle)
-      animations.add(:fire, fire)
+      # animations.add(:fire, fire)
     end
 
     def update(frame_time, keys : Keys)

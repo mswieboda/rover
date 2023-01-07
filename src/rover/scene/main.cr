@@ -1,13 +1,11 @@
-require "../rover"
-require "../player"
+require "../map"
 require "../hud"
 
 module Rover::Scene
   class Main < GSF::Scene
     getter view : GSF::View
+    getter map : Map
     getter hud
-    # getter player
-    getter rover
 
     def initialize(window)
       super(:main)
@@ -16,8 +14,7 @@ module Rover::Scene
 
       view.zoom(1 / Screen.scaling_factor)
 
-      # @player = Player.new(x: 300, y: 300)
-      @rover = Rover.new(x: 300, y: 300)
+      @map = Map.new(x: 0, y: 0)
       @hud = HUD.new
     end
 
@@ -27,14 +24,12 @@ module Rover::Scene
         return
       end
 
-      # player.update(frame_time, keys)
-      rover.update(frame_time, keys)
+      map.update(frame_time, keys)
       hud.update(frame_time)
     end
 
     def draw(window)
-      # player.draw(window)
-      rover.draw(window)
+      map.draw(window)
       hud.draw(window)
     end
   end
