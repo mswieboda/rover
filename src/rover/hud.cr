@@ -1,6 +1,6 @@
 require "./font"
 
-module GameSFTemplate
+module Rover
   class HUD
     getter text
 
