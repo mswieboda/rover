@@ -3,32 +3,40 @@ module Rover
     getter x : Float64
     getter y : Float64
     getter animations
+    getter speed
+    getter dx
+    getter dy
 
-    Speed = 333
+    InitialSpeed = 33
+    Acceleration = 100
+    Decceleration = 75
+    MaxSpeed = 1133
     Sheet = "./assets/rover.png"
+    SpriteFPS = 60
+    SpriteSize = 192
 
     def initialize(x = 0, y = 0)
-      # sprite size
-      size = 192
       @x = x
       @y = y
+      @dx = 0_f64
+      @dy = 0_f64
+      @speed = 0_f32
 
-      fps = 60
+      # animations
+      up = GSF::Animation.new((SpriteFPS / 3).to_i, loops: false)
+      up.add(Sheet, 0, 0, SpriteSize, SpriteSize)
 
-      up = GSF::Animation.new((fps / 3).to_i, loops: false)
-      up.add(Sheet, 0, 0, size, size)
+      right_up = GSF::Animation.new((SpriteFPS / 3).to_i, loops: false)
+      right_up.add(Sheet, 1 * SpriteSize, 0, SpriteSize, SpriteSize)
 
-      right_up = GSF::Animation.new((fps / 3).to_i, loops: false)
-      right_up.add(Sheet, 1 * size, 0, size, size)
+      right = GSF::Animation.new((SpriteFPS / 3).to_i, loops: false)
+      right.add(Sheet, 2 * SpriteSize, 0, SpriteSize, SpriteSize)
 
-      right = GSF::Animation.new((fps / 3).to_i, loops: false)
-      right.add(Sheet, 2 * size, 0, size, size)
+      right_down = GSF::Animation.new((SpriteFPS / 3).to_i, loops: false)
+      right_down.add(Sheet, 3 * SpriteSize, 0, SpriteSize, SpriteSize)
 
-      right_down = GSF::Animation.new((fps / 3).to_i, loops: false)
-      right_down.add(Sheet, 3 * size, 0, size, size)
-
-      down = GSF::Animation.new((fps / 3).to_i, loops: false)
-      down.add(Sheet, 4 * size, 0, size, size)
+      down = GSF::Animation.new((SpriteFPS / 3).to_i, loops: false)
+      down.add(Sheet, 4 * SpriteSize, 0, SpriteSize, SpriteSize)
 
       @animations = GSF::Animations.new(:up, up)
       @animations.add(:right_up, right_up)
@@ -47,26 +55,44 @@ module Rover
     end
 
     def update_movement(frame_time, keys : Keys)
-      dx = 0_f64
-      dy = 0_f64
-      speed = Speed * frame_time
+      ndx = 0_f64
+      ndy = 0_f64
 
-      dy -= speed if keys.pressed?(Keys::W)
-      dx -= speed if keys.pressed?(Keys::A)
-      dy += speed if keys.pressed?(Keys::S)
-      dx += speed if keys.pressed?(Keys::D)
+      ndy -= 1 if keys.pressed?(Keys::W)
+      ndx -= 1 if keys.pressed?(Keys::A)
+      ndy += 1 if keys.pressed?(Keys::S)
+      ndx += 1 if keys.pressed?(Keys::D)
 
-      if dx != 0 && dy != 0
+      # accelerate
+      if ndx != 0 || ndy != 0
+        @speed = InitialSpeed * frame_time if speed <= InitialSpeed * frame_time
+        @speed += Acceleration * frame_time
+        @speed = MaxSpeed * frame_time if @speed > MaxSpeed * frame_time
+      end
+
+      # decelerate
+      if speed > 0
+        @speed -= Decceleration * frame_time
+        @speed = 0 if speed < 0
+      end
+
+      # angle directions
+      if ndx != 0 && ndy != 0
         # 45 deg, from sqrt(x^2 + y^2) at 45 deg
         const = 0.70710678118_f64
-        dx *= const
-        dy *= const
+        ndx *= const
+        ndy *= const
       end
 
-      if dx != 0 || dy != 0
+      # new dx, dy and animate movement
+      if ndx != 0 || ndy != 0
+        @dx = ndx
+        @dy = ndy
+
         animate_move(dx, dy)
-        move(dx, dy)
       end
+
+      move(dx * speed, dy * speed)
     end
 
     def animate_move(dx : Float64, dy : Float64)
