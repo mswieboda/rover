@@ -18,9 +18,9 @@ module Rover::Scene
 
       view.zoom(1 / Screen.scaling_factor)
 
-      @ground = Ground.new(x: 0, y: 0)
-      @rover = Rover.new(x: 300, y: 300)
-      @ore = Ore.new(x: 500, y: 500)
+      @ground = Ground.new
+      @rover = Rover.new
+      @ore = Ore.new(x: 500, y: -300)
       @hud = HUD.new
     end
 
