@@ -79,17 +79,17 @@ module Rover
           @animations.play(:right)
         end
       elsif dx < 0
-        if dy > 0
+        if dy < 0
           @animations.play(:left_up)
-        elsif dy < 0
+        elsif dy > 0
           @animations.play(:left_down)
         else
           @animations.play(:left)
         end
-      elsif dy > 0
-        @animations.play(:down)
       elsif dy < 0
         @animations.play(:up)
+      elsif dy > 0
+        @animations.play(:down)
       end
     end
 
