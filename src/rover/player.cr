@@ -1,14 +1,20 @@
 require "./movable"
 
 module Rover
-  class Rover < Movable
-    InitialSpeed = 33
-    Acceleration = 100
+  class Player < Movable
+    InitialSpeed = 3
+    Acceleration = 80
     Decceleration = 75
-    MaxSpeed = 1133
-    SpriteSheet = "./assets/rover.png"
-    SpriteWidth = 192
-    SpriteHeight = 192
+    MaxSpeed = 333
+    SpriteSheet = "./assets/player.png"
+    SpriteWidth = 64
+    SpriteHeight = 96
+
+    def initialize(x = 0, y = 0)
+      super
+
+      @enabled = true
+    end
 
     def self.initial_speed
       InitialSpeed

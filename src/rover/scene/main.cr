@@ -1,13 +1,15 @@
 require "../ground"
-require "../ore"
+require "../player"
 require "../rover"
+require "../ore"
 require "../hud"
 
 module Rover::Scene
   class Main < GSF::Scene
     getter view : GSF::View
     getter ground : Ground
-    getter rover
+    getter player : Player
+    getter rover : Rover
     getter ore
     getter hud
 
@@ -20,6 +22,7 @@ module Rover::Scene
 
       @ground = Ground.new
       @rover = Rover.new
+      @player = Player.new
       @ore = Ore.new(x: 500, y: -300)
       @hud = HUD.new
     end
@@ -31,8 +34,15 @@ module Rover::Scene
       end
 
       ground.update(frame_time, keys)
+      player.update(frame_time, keys)
       rover.update(frame_time, keys)
-      view.center(rover.x, rover.y)
+
+      if rover.enabled?
+        view.center(rover.x, rover.y)
+      else
+        view.center(player.x, player.y)
+      end
+
       ore.update(frame_time)
       hud.update(frame_time)
     end
@@ -44,6 +54,7 @@ module Rover::Scene
       ground.draw(window)
       ore.draw(window)
       rover.draw(window)
+      player.draw(window)
 
       # default view
       view.set_default_current
