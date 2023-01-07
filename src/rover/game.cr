@@ -2,8 +2,6 @@ require "./stage"
 
 module Rover
   class Game < GSF::Game
-    getter manager
-
     def initialize
       mode = SF::VideoMode.desktop_mode
       style = SF::Style::None
