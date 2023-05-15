@@ -13,6 +13,6 @@ dependencies:
     github: mswieboda/game_sf
     version: 0.13.0
 
-crystal: 1.6.2
+crystal: 1.8.2
 
 license: MIT
